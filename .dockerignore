@@ -1,0 +1,17 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+LICENSE
+
+# CI / build configs (not needed inside image)
+.github/
+docker-bake.hcl
+
+# Development files
+.idea/
+.vscode/
+*.swp
+*~
