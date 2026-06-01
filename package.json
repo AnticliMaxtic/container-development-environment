@@ -1,0 +1,17 @@
+{
+  "name": "container-development-environment",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Composable containerized development environments (CDE)",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky",
+    "sync": "yarn install && yarn husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "husky": "^9.1.7"
+  },
+  "packageManager": "yarn@4.6.0"
+}

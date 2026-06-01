@@ -1,34 +1,39 @@
-# Gradle files
-.gradle/
-build/
+# OS
+.DS_Store
+Thumbs.db
 
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Log/OS Files
-*.log
-
-# Android Studio generated files and folders
-captures/
-.externalNativeBuild/
-.cxx/
-*.aab
-*.apk
-output-metadata.json
-
-# IntelliJ
-*.iml
+# IDE / editors
 .idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+.vscode/
+*.swp
+*~
+*.sublime-*
 
-# Keystore files
-*.jks
-*.keystore
+# Build / temp
+*.log
+*.tmp
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+# =============================================================================
+# Yarn Berry (Modern Yarn)
+# =============================================================================
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
-# Android Profiling
-*.hprof
+.pnp.*
+yarn-error.log
+
+# =============================================================================
+# Traditional package managers (prevent accidental use)
+# =============================================================================
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+
+# =============================================================================
+# Husky
+# =============================================================================
+.husky/_/
