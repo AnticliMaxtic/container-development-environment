@@ -39,14 +39,21 @@ jobs:
         id: version
         shell: bash
         run: |
+          TARGET="${{ github.event.inputs.target || 'core' }}"
+          echo "target=${TARGET}" >> $GITHUB_OUTPUT
+
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version }}" ]; then
             VERSION="${{ github.event.inputs.version }}"
           elif [ "${{ github.event_name }}" = "release" ]; then
-            # Release Please creates tags like "core-0.0.2"
+            # Release Please creates tags like "core-0.0.2", "android-0.0.1", "cpp-clang-0.0.1", "android-cpp-0.0.1" etc.
             TAG="${{ github.event.release.tag_name }}"
-            VERSION="${TAG#core-}"
+            # Extract component (handles components with dashes like "android-cpp")
+            COMPONENT=${TAG%%-[0-9]*}
+            VERSION=${TAG#${COMPONENT}-}
+            TARGET=${COMPONENT}
+            echo "target=${TARGET}" >> $GITHUB_OUTPUT
           else
-            VERSION=$(cat images/core/VERSION | tr -d '[:space:]')
+            VERSION=$(cat images/${TARGET}/VERSION | tr -d '[:space:]')
           fi
 
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
@@ -69,49 +76,51 @@ jobs:
         id: tags
         shell: bash
         run: |
+          TARGET="${{ steps.version.outputs.target }}"
           VERSION="${{ steps.version.outputs.version }}"
           SHA=$(git rev-parse --short HEAD)
           REG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
 
           # Comma-separated for docker/bake-action set (single value)
-          TAGS_CSV="${REG}:core-${VERSION}-${SHA},${REG}:core-${VERSION},${REG}:core-$(echo ${VERSION} | cut -d. -f1,2),${REG}:core-$(echo ${VERSION} | cut -d. -f1),${REG}:core"
+          TAGS_CSV="${REG}:${TARGET}-${VERSION}-${SHA},${REG}:${TARGET}-${VERSION},${REG}:${TARGET}-$(echo ${VERSION} | cut -d. -f1,2),${REG}:${TARGET}-$(echo ${VERSION} | cut -d. -f1),${REG}:${TARGET}"
           echo "tags=${TAGS_CSV}" >> $GITHUB_OUTPUT
 
           # Multi-line for summary display
           {
             echo "tags_block<<EOF"
-            echo "${REG}:core-${VERSION}-${SHA}"
-            echo "${REG}:core-${VERSION}"
-            echo "${REG}:core-$(echo ${VERSION} | cut -d. -f1,2)"
-            echo "${REG}:core-$(echo ${VERSION} | cut -d. -f1)"
-            echo "${REG}:core"
+            echo "${REG}:${TARGET}-${VERSION}-${SHA}"
+            echo "${REG}:${TARGET}-${VERSION}"
+            echo "${REG}:${TARGET}-$(echo ${VERSION} | cut -d. -f1,2)"
+            echo "${REG}:${TARGET}-$(echo ${VERSION} | cut -d. -f1)"
+            echo "${REG}:${TARGET}"
             echo "EOF"
           } >> $GITHUB_OUTPUT
 
           echo "Full tag list:"
-          echo "${REG}:core-${VERSION}-${SHA}"
-          echo "${REG}:core-${VERSION}"
-          echo "${REG}:core-$(echo ${VERSION} | cut -d. -f1,2)"
-          echo "${REG}:core-$(echo ${VERSION} | cut -d. -f1)"
-          echo "${REG}:core"
+          echo "${REG}:${TARGET}-${VERSION}-${SHA}"
+          echo "${REG}:${TARGET}-${VERSION}"
+          echo "${REG}:${TARGET}-$(echo ${VERSION} | cut -d. -f1,2)"
+          echo "${REG}:${TARGET}-$(echo ${VERSION} | cut -d. -f1)"
+          echo "${REG}:${TARGET}"
 
       - name: Publish with Bake
         uses: docker/bake-action@v6
         with:
           files: |
             ./docker-bake.hcl
-          targets: ${{ github.event.inputs.target || 'core' }}
+          targets: ${{ steps.version.outputs.target }}
           push: true
           set: |
-            ${{ github.event.inputs.target || 'core' }}.tags=${{ steps.tags.outputs.tags }}
-            ${{ github.event.inputs.target || 'core' }}.platforms=linux/amd64,linux/arm64
-            ${{ github.event.inputs.target || 'core' }}.labels.org.opencontainers.image.version=${{ steps.version.outputs.version }}
-            ${{ github.event.inputs.target || 'core' }}.labels.org.opencontainers.image.revision=${{ github.sha }}
+            ${{ steps.version.outputs.target }}.tags=${{ steps.tags.outputs.tags }}
+            ${{ steps.version.outputs.target }}.platforms=linux/amd64,linux/arm64
+            ${{ steps.version.outputs.target }}.labels.org.opencontainers.image.version=${{ steps.version.outputs.version }}
+            ${{ steps.version.outputs.target }}.labels.org.opencontainers.image.revision=${{ github.sha }}
 
       - name: Summary
         shell: bash
         run: |
-          echo "## ✅ Published ${{ github.event.inputs.target || 'core' }}" >> $GITHUB_STEP_SUMMARY
+          TARGET="${{ steps.version.outputs.target }}"
+          echo "## ✅ Published ${TARGET}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Version:** \`${{ steps.version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
@@ -121,5 +130,5 @@ jobs:
           echo "${{ steps.tags.outputs.tags_block }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Immutable tag: \`core-${{ steps.version.outputs.version }}-<short-sha>\`" >> $GITHUB_STEP_SUMMARY
-          echo "Moving tags updated: \`core-${{ steps.version.outputs.version }}\`, major/minor variants, and \`core\`" >> $GITHUB_STEP_SUMMARY
+          echo "Immutable tag: \`${TARGET}-${{ steps.version.outputs.version }}-<short-sha>\`" >> $GITHUB_STEP_SUMMARY
+          echo "Moving tags updated: \`${TARGET}-${{ steps.version.outputs.version }}\`, major/minor variants, and \`${TARGET}\`" >> $GITHUB_STEP_SUMMARY
