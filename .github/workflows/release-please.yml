@@ -18,10 +18,10 @@ jobs:
         uses: actions/create-github-app-token@v3
         with:
           # These secrets come from a GitHub App (created via UI or Terraform) and installed on the repo/org.
-          # You are using RELEASE_PLEASE_APP_ID and RELEASE_PLEASE_PRIVATE_KEY.
+          # You are using RELEASE_PLEASE_APP_ID and RELEASE_PLEASE_APP_PRIVATE_KEY.
           # See AGENTS.md "Release Please permissions note" for setup details.
           app-id: ${{ secrets.RELEASE_PLEASE_APP_ID }}
-          private-key: ${{ secrets.RELEASE_PLEASE_PRIVATE_KEY }}
+          private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
 
       - name: Release Please
         uses: googleapis/release-please-action@v5
