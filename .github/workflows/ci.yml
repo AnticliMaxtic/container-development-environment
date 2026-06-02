@@ -69,8 +69,13 @@ jobs:
               TARGET="cpp"
             elif echo "$CHANGED_FILES" | grep -qE '^images/core/'; then
               TARGET="core"
+            elif echo "$CHANGED_FILES" | grep -qE '^\.github/workflows/|docker-bake\.hcl'; then
+              # Changes to CI workflows (ci.yml, publish.yml, release-please.yml, etc. — including the
+              # path-based target narrowing logic itself) or the central docker-bake.hcl definition
+              # should validate the core build path (and exercise auto-selection + bake-action + --set overrides).
+              TARGET="core"
             else
-              # Fallback for changes outside images/ (e.g. workflows, docs) or mixed
+              # Fallback for changes outside images/ (e.g. other workflows, docs, root files like docker-bake.hcl) or mixed changes
               TARGET="core"
             fi
             echo "Detected changed paths; selected target: $TARGET"
