@@ -1,6 +1,6 @@
 {
   "images/core": "0.0.1",
-  "images/cpp": "0.0.1",
+  "images/cpp": "0.1.0",
   "images/cpp-clang": "0.0.1",
   "images/cpp-gcc": "0.0.1",
   "images/android": "0.0.1",
