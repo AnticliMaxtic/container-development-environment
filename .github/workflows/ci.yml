@@ -184,6 +184,7 @@ jobs:
       - name: Build and push with Bake
         uses: docker/bake-action@v7
         with:
+          source: .
           files: |
             ./docker-bake.hcl
           targets: ${{ steps.bake-settings.outputs.target }}

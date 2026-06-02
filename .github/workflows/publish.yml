@@ -107,6 +107,7 @@ jobs:
       - name: Publish with Bake
         uses: docker/bake-action@v7
         with:
+          source: .
           files: |
             ./docker-bake.hcl
           targets: ${{ steps.version.outputs.target }}
