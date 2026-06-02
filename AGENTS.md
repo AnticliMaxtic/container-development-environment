@@ -64,6 +64,18 @@ Given version `0.0.1` and short commit `abc1234`:
 4. Update this `AGENTS.md` and `README.md` with usage notes.
 5. The `publish.yml` workflow can be manually dispatched for any target.
 
+### C++ family (built on core)
+- `cpp` — Both Clang (default) + GCC + ninja, cmake (/opt), bazel, meson+conan (via uv), ccache. /ccache for cache.
+- `cpp-clang` — Clang-only variant.
+- `cpp-gcc` — GCC-only variant.
+- Expandable for additional compilers.
+
+### Android images
+- `android` — Lighter pure Java/Kotlin Android (extends `core` + Java + SDK in /opt, no NDK/C++ toolchain).
+- `android-cpp` — Android native/C++: extends `cpp` + Java + full Android SDK + NDK (tools in /opt/*).
+
+Android Studio (full IDE) is planned as a heavier variant.
+
 ## CI / Release Pipeline Rules
 
 We use **Release Please** (manifest mode) for automated semantic versioning.

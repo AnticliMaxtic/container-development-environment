@@ -25,6 +25,11 @@ Docker Hub (`anticlimaxtic/cde`) can be added later as a secondary mirror if nee
 | Image | Description | Base |
 |-------|-------------|------|
 | `ghcr.io/anticlimaxtic/cde:core` | Minimal core development environment | `ubuntu:24.04` + git + vim + uv + nvm (no default Node) |
+| `ghcr.io/anticlimaxtic/cde:cpp` | C++ dev (Clang default + GCC) + full toolset | extends `core` + clang/gcc + cmake/ninja/bazel/meson/conan/ccache |
+| `ghcr.io/anticlimaxtic/cde:cpp-clang` | C++ dev (Clang only) | extends `core` + clang + toolset |
+| `ghcr.io/anticlimaxtic/cde:cpp-gcc` | C++ dev (GCC only) | extends `core` + gcc + toolset |
+| `ghcr.io/anticlimaxtic/cde:android` | Android (pure Java/Kotlin, lighter) | extends `core` + Java 21 + Android SDK in `/opt` (no NDK) |
+| `ghcr.io/anticlimaxtic/cde:android-cpp` | Android native/C++ (SDK + NDK) | extends `cpp` + Java + Android SDK/NDK in `/opt` |
 
 ## Tagging Strategy (Semantic Versioning)
 
