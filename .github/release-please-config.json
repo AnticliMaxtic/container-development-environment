@@ -12,6 +12,46 @@
       "extra-files": [
         "VERSION"
       ]
+    },
+    "images/cpp": {
+      "component": "cpp",
+      "release-type": "simple",
+      "changelog-path": "images/cpp/CHANGELOG.md",
+      "extra-files": [
+        "VERSION"
+      ]
+    },
+    "images/cpp-clang": {
+      "component": "cpp-clang",
+      "release-type": "simple",
+      "changelog-path": "images/cpp-clang/CHANGELOG.md",
+      "extra-files": [
+        "VERSION"
+      ]
+    },
+    "images/cpp-gcc": {
+      "component": "cpp-gcc",
+      "release-type": "simple",
+      "changelog-path": "images/cpp-gcc/CHANGELOG.md",
+      "extra-files": [
+        "VERSION"
+      ]
+    },
+    "images/android": {
+      "component": "android",
+      "release-type": "simple",
+      "changelog-path": "images/android/CHANGELOG.md",
+      "extra-files": [
+        "VERSION"
+      ]
+    },
+    "images/android-cpp": {
+      "component": "android-cpp",
+      "release-type": "simple",
+      "changelog-path": "images/android-cpp/CHANGELOG.md",
+      "extra-files": [
+        "VERSION"
+      ]
     }
   }
 }
