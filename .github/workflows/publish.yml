@@ -15,6 +15,10 @@ on:
         default: 'core'
         type: string
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: anticlimaxtic/cde
@@ -25,9 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     # Only run on actual releases or manual dispatch with intent to publish
     if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch')
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout repository

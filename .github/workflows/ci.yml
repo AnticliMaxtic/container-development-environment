@@ -23,6 +23,10 @@ on:
         default: 'core'
         type: string
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: anticlimaxtic/cde
@@ -31,9 +35,6 @@ jobs:
   build:
     name: Build ${{ github.event.inputs.target || 'core' }}${{ github.event_name == 'pull_request' && ' (auto-selected by edited paths)' || '' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout repository
