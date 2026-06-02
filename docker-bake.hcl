@@ -55,6 +55,10 @@ variable "CPP_BASE_IMAGE" {
   default = "ghcr.io/anticlimaxtic/cde:cpp"
 }
 
+variable "PLATFORMS" {
+  default = ["linux/amd64", "linux/arm64"]
+}
+
 group "default" {
   targets = ["core", "cpp", "android"]
 }
@@ -72,7 +76,7 @@ group "android" {
 target "core" {
   context    = "images/core"
   dockerfile = "Dockerfile"
-  platforms  = ["linux/amd64", "linux/arm64"]
+  platforms  = PLATFORMS
   tags = [
     "ghcr.io/anticlimaxtic/cde:core"
   ]
@@ -89,7 +93,7 @@ target "core" {
 target "cpp" {
   context    = "images/cpp"
   dockerfile = "Dockerfile"
-  platforms  = ["linux/amd64", "linux/arm64"]
+  platforms  = PLATFORMS
   args = {
     CLANG_VERSION   = CLANG_VERSION
     GCC_VERSION     = GCC_VERSION
@@ -110,7 +114,7 @@ target "cpp" {
 target "cpp-clang" {
   context    = "images/cpp-clang"
   dockerfile = "Dockerfile"
-  platforms  = ["linux/amd64", "linux/arm64"]
+  platforms  = PLATFORMS
   args = {
     CLANG_VERSION   = CLANG_VERSION
     CMAKE_VERSION   = CMAKE_VERSION
@@ -130,7 +134,7 @@ target "cpp-clang" {
 target "cpp-gcc" {
   context    = "images/cpp-gcc"
   dockerfile = "Dockerfile"
-  platforms  = ["linux/amd64", "linux/arm64"]
+  platforms  = PLATFORMS
   args = {
     GCC_VERSION     = GCC_VERSION
     CMAKE_VERSION   = CMAKE_VERSION
@@ -153,7 +157,7 @@ target "cpp-gcc" {
 target "android" {
   context    = "images/android"
   dockerfile = "Dockerfile"
-  platforms  = ["linux/amd64", "linux/arm64"]
+  platforms  = PLATFORMS
   args = {
     JAVA_VERSION                = JAVA_VERSION
     JAVA_BUILD                  = JAVA_BUILD
@@ -175,7 +179,7 @@ target "android" {
 target "android-cpp" {
   context    = "images/android-cpp"
   dockerfile = "Dockerfile"
-  platforms  = ["linux/amd64", "linux/arm64"]
+  platforms  = PLATFORMS
   args = {
     BASE_IMAGE                  = CPP_BASE_IMAGE
     JAVA_VERSION                = JAVA_VERSION
