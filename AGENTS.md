@@ -125,6 +125,30 @@ Release Please also updates the per-package `VERSION` file (e.g. `images/core/VE
 
 For emergency/hotfix publishes, you can use manual dispatch on `publish.yml` with an explicit version.
 
+**Release Please permissions note**: The default `GITHUB_TOKEN` is often restricted by repo/org settings and cannot create pull requests (this is what triggers "GitHub Actions is not permitted to create or approve pull requests").
+
+**Recommended approach: Use a GitHub App** (more secure than a PAT):
+- Create a GitHub App in the GitHub UI (or via API/script) with these minimum permissions:
+  - Repository permissions: Contents = Read & write, Pull requests = Read & write, Metadata = Read.
+- Install the App on this repository (or organization).
+- Store two secrets (you mentioned using `RELEASE_PLEASE_APP_ID` and `RELEASE_PLEASE_PRIVATE_KEY`):
+  - `RELEASE_PLEASE_APP_ID` = the App ID (numeric)
+  - `RELEASE_PLEASE_PRIVATE_KEY` = the full private key (PEM format) generated when you create the App.
+- The `release-please.yml` workflow now uses `actions/create-github-app-token` + these secrets to generate a short-lived token.
+
+The workflow was updated to prefer the GitHub App token.
+
+**Regarding Terraform**: It is *not* possible to fully create and register a new GitHub App using a first-class Terraform resource in the official `hashicorp/github` provider (or the community `integrations/github` provider). GitHub App creation involves generating a private key and often an interactive manifest approval flow in the browser. 
+
+Terraform *can* help with:
+- Storing `app_id` and the private key in a secrets manager (Vault, AWS Secrets Manager, etc.).
+- Creating GitHub repository secrets or organization secrets from those values.
+- Managing App *installations* on repositories (`github_app_installation` in some setups).
+
+Most teams create the GitHub App once manually (or with a small one-off script using the GitHub API + App Manifest flow), then manage the credentials and any further automation with Terraform.
+
+See the comments in `.github/workflows/release-please.yml` (and the secret names `RELEASE_PLEASE_APP_ID` / `RELEASE_PLEASE_PRIVATE_KEY` that you created) for the exact step that generates the token.
+
 ## Things to Be Careful About
 
 - **Immutable tags**: Once published, `core-X.Y.Z-<sha>` tags must never change.
