@@ -3,6 +3,6 @@
   "images/cpp": "0.0.1",
   "images/cpp-clang": "0.0.1",
   "images/cpp-gcc": "0.0.1",
-  "images/android": "0.0.1",
+  "images/android": "0.1.0",
   "images/android-cpp": "0.0.1"
 }
